@@ -12,16 +12,13 @@ $ pig -x local -f pregunta.pig
 
         >>> Escriba su respuesta a partir de este punto <<<
 */
-ejercicio = LOAD 'data.csv' USING PigStorage(',') 
-    AS ( 
-            id: int, 
-            nombre:chararray, 
-            apellido:chararray, 
-            fecha:chararray, 
-            color:chararray, 
-            numer:chararray 
-    ); 
- 
-sub_conjunto= FOREACH ejercicio GENERATE nombre, color; 
-filtro_B= FILTER sub_conjunto BY (nombre MATCHES '.*^[kK].*') OR (color == 'blue'); 
-STORE filtro_B INTO 'output' USING PigStorage(',');
+ejercicio = LOAD 'data.tsv' USING PigStorage('\t')
+    AS (
+            letra:chararray,
+            fecha:chararray,
+            numer:int
+    );
+
+letras_agrupadas = GROUP ejercicio BY letra;
+conteo_letras = FOREACH letras_agrupadas GENERATE group, COUNT(ejercicio);
+STORE conteo_letras INTO 'output' USING PigStorage(',');
