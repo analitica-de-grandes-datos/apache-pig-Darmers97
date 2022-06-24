@@ -20,3 +20,17 @@ $ pig -x local -f pregunta.pig
 */
 
 
+ejercicio = LOAD 'data.csv' USING PigStorage(',') 
+    AS ( 
+            id: int, 
+            nombre:chararray, 
+            apellido:chararray, 
+            fecha:chararray, 
+            color:chararray, 
+            numer:chararray 
+    ); 
+ 
+sub_conjunto = FOREACH ejercicio GENERATE REGEX_EXTRACT(fecha, '(.*)-(.*)-(.*)', 2); 
+
+
+STORE sub_conjunto INTO 'output' USING PigStorage(',');; 
